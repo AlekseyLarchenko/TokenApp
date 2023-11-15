@@ -11,17 +11,17 @@ def index():
     if request.method == 'POST':
         login = request.form['login']
         password = request.form['password']
+        realm = request.form['realm']  # Добавлено новое поле realm
 
-        url = 'https://flespi.io/realm/gQxzy6wHgoE/login'
+        url = f'https://flespi.io/realm/{realm}/login'
         hashed_password = hashlib.sha512(password.encode()).hexdigest()
         print(hashed_password)
 
         data = {"name": login, "password": hashed_password}
         response = requests.post(url, data=json.dumps(data),
-                                  headers={'Content-Type': 'application/json'})
+                                 headers={'Content-Type': 'application/json'})
 
         if response.status_code == 200:
-            # content = response.text
             data = response.json()
             tokens = [item['token'] for item in data.get('result', [])]
             content = ", ".join(tokens)

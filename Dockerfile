@@ -1,13 +1,25 @@
-FROM python:3.8-slim
+FROM debian:bullseye-slim
 
-ENV PYTHONUNBUFFERED 1
+ENV LANG C.UTF-8
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc \
+        libffi-dev \
+        libssl-dev \
+        libxml2-dev \
+        xmlsec1 \
+        python3-pip \
+        python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY requirements.txt /app/
+COPY ./ .
 
-RUN pip install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . /app/
+EXPOSE 5000
 
-CMD ["python", "app.py"]
+ENTRYPOINT ["python3", "app.py"]
+
